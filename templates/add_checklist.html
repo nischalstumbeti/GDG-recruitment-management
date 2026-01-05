@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Add Interview Checklist - GDG On Campus{% endblock %}
+
+{% block content %}
+<!-- Loading Animation -->
+<div id="loadingAnimation" class="loading-animation-container">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent">
+<div class="checklist-page-header">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <div class="page-header">
+        <h1>Add / Update Interview Checklist</h1>
+        <p>Evaluate candidate interview performance</p>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success">{{ success }}</div>
+{% endif %}
+
+<div class="form-container">
+    <form method="POST" id="checklistForm" class="checklist-form">
+        <div class="form-section">
+            <h2>Candidate Selection</h2>
+            <div class="form-group">
+                <label for="register_id">Select Candidate *</label>
+                <select id="register_id" name="register_id" required>
+                    <option value="">-- Select Candidate --</option>
+                    {% for reg_id, candidate in candidates.items() %}
+                    <option value="{{ reg_id }}">{{ candidate.candidate_name }} ({{ reg_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        {% if user_role != 'faculty_reviewer' %}
+        <div class="form-section">
+            <h2>Technical Section</h2>
+            <div id="skills-container">
+                <div class="skill-row">
+                    <div class="form-group">
+                        <label>Technology / Skill</label>
+                        <input type="text" name="skill_0_tech" placeholder="e.g., Python, JavaScript">
+                    </div>
+                    <div class="form-group">
+                        <label>Skill Level</label>
+                        <select name="skill_0_level">
+                            <option value="">-- Select Level --</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-small remove-skill" style="display:none;">Remove</button>
+                </div>
+            </div>
+            <button type="button" id="add-skill" class="btn btn-secondary">+ Add Another Skill</button>
+            <input type="hidden" id="skill_count" name="skill_count" value="1">
+        </div>
+        {% endif %}
+        
+        {% if user_role != 'faculty_reviewer' %}
+        <div class="form-section">
+            <h2>Practical Experience</h2>
+            <div class="form-group">
+                <div class="practical-experience-options">
+                    <label class="option-academic">
+                        <input type="radio" name="practical_experience" value="Academic Project" required>
+                        <span>Academic Project</span>
+                    </label>
+                    <label class="option-personal">
+                        <input type="radio" name="practical_experience" value="Personal Project">
+                        <span>Personal Project</span>
+                    </label>
+                    <label class="option-no-experience">
+                        <input type="radio" name="practical_experience" value="No Prior Experience">
+                        <span>No Prior Experience</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="form-section">
+            <h2>{% if user_role == 'faculty_reviewer' %}Soft Skills Evaluation{% else %}Interviewer Evaluation{% endif %}</h2>
+            <div class="form-group">
+                <label for="communication_skills">Communication Skills</label>
+                <select id="communication_skills" name="communication_skills">
+                    <option value="">-- Select --</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Average">Average</option>
+                    <option value="Needs Improvement">Needs Improvement</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="time_management">Time Management</label>
+                <select id="time_management" name="time_management">
+                    <option value="">-- Select --</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Average">Average</option>
+                    <option value="Needs Improvement">Needs Improvement</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="leadership_ability">Leadership Ability</label>
+                <select id="leadership_ability" name="leadership_ability">
+                    <option value="">-- Select --</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Average">Average</option>
+                    <option value="Needs Improvement">Needs Improvement</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>Comments</h2>
+            {% if user_role != 'faculty_reviewer' %}
+            <div class="form-group">
+                <label for="interviewer_comments">Interviewer Comments</label>
+                <textarea id="interviewer_comments" name="interviewer_comments" rows="4" placeholder="Enter interviewer comments..."></textarea>
+            </div>
+            {% endif %}
+            
+            {% if user_role == 'faculty_reviewer' %}
+            <div class="form-group">
+                <label for="faculty_comments">Faculty Mentor Comments</label>
+                <textarea id="faculty_comments" name="faculty_comments" rows="4" placeholder="Enter faculty mentor comments..."></textarea>
+            </div>
+            {% elif user_role == 'interviewer' %}
+            <!-- Interviewer can see but not edit Faculty Mentor Comments if already filled -->
+            <div class="form-group">
+                <label for="faculty_comments">Faculty Mentor Comments</label>
+                <textarea id="faculty_comments" name="faculty_comments" rows="4" placeholder="Faculty mentor comments will appear here..." readonly style="background-color: #f5f5f5;"></textarea>
+            </div>
+            {% else %}
+            <!-- Admin can see and edit -->
+            <div class="form-group">
+                <label for="faculty_comments">Faculty Mentor Comments</label>
+                <textarea id="faculty_comments" name="faculty_comments" rows="4" placeholder="Enter faculty mentor comments..."></textarea>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-section">
+            <h2>Internal Official Use</h2>
+            {% if user_role == 'interviewer' %}
+            <div class="form-group">
+                <label for="interview_taken_by">Interview Taken By</label>
+                <input type="text" id="interview_taken_by" name="interview_taken_by" value="{{ user_name }}" readonly style="background-color: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label for="remarks">Remarks</label>
+                <textarea id="remarks" name="remarks" rows="3" placeholder="Enter remarks..."></textarea>
+            </div>
+            {% elif user_role == 'faculty_reviewer' %}
+            <div class="form-group">
+                <label for="reviewed_by">Reviewed By</label>
+                <input type="text" id="reviewed_by" name="reviewed_by" value="{{ user_name }}" readonly style="background-color: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label for="remarks">Remarks</label>
+                <textarea id="remarks" name="remarks" rows="3" placeholder="Enter remarks..."></textarea>
+            </div>
+            {% else %}
+            <!-- Admin can see and edit all fields -->
+            <div class="form-group">
+                <label for="interview_taken_by">Interview Taken By</label>
+                <input type="text" id="interview_taken_by" name="interview_taken_by" value="" placeholder="Interviewer name">
+            </div>
+            <div class="form-group">
+                <label for="reviewed_by">Reviewed By</label>
+                <input type="text" id="reviewed_by" name="reviewed_by" value="" placeholder="Reviewer name">
+            </div>
+            <div class="form-group">
+                <label for="remarks">Remarks</label>
+                <textarea id="remarks" name="remarks" rows="3" placeholder="Enter remarks..."></textarea>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Checklist</button>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+</div>
+
+<script>
+// Update practical experience option styles when radio buttons change
+function updatePracticalExperienceStyles() {
+    const radioButtons = document.querySelectorAll('input[name="practical_experience"]');
+    radioButtons.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            // Remove checked class from all labels
+            document.querySelectorAll('.practical-experience-options label').forEach(function(label) {
+                label.classList.remove('checked');
+            });
+            // Add checked class to selected label
+            if (this.checked) {
+                this.closest('label').classList.add('checked');
+            }
+        });
+    });
+}
+
+let skillCount = 1;
+
+document.getElementById('add-skill').addEventListener('click', function() {
+    const container = document.getElementById('skills-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'skill-row';
+    newRow.innerHTML = `
+        <div class="form-group">
+            <label>Technology / Skill</label>
+            <input type="text" name="skill_${skillCount}_tech" placeholder="e.g., Python, JavaScript">
+        </div>
+        <div class="form-group">
+            <label>Skill Level</label>
+            <select name="skill_${skillCount}_level">
+                <option value="">-- Select Level --</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-danger btn-small remove-skill">Remove</button>
+    `;
+    container.appendChild(newRow);
+    skillCount++;
+    document.getElementById('skill_count').value = skillCount;
+    
+    // Show remove buttons for all rows
+    document.querySelectorAll('.remove-skill').forEach(btn => btn.style.display = 'inline-block');
+    
+    // Add remove functionality
+    newRow.querySelector('.remove-skill').addEventListener('click', function() {
+        newRow.remove();
+        skillCount--;
+        document.getElementById('skill_count').value = skillCount;
+        
+        // Hide remove button if only one row left
+        if (document.querySelectorAll('.skill-row').length === 1) {
+            document.querySelector('.remove-skill').style.display = 'none';
+        }
+    });
+});
+
+// Handle remove buttons
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-skill')) {
+        e.target.closest('.skill-row').remove();
+        skillCount--;
+        document.getElementById('skill_count').value = skillCount;
+        
+        if (document.querySelectorAll('.skill-row').length === 1) {
+            document.querySelector('.remove-skill').style.display = 'none';
+        }
+    }
+});
+
+// Show loading animation on page load (1 second)
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        document.getElementById('loadingAnimation').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    }, 1000);
+    
+    // Update practical experience option styles on load
+    updatePracticalExperienceStyles();
+});
+</script>
+{% endblock %}
+
+

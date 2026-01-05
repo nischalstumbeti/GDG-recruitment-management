@@ -1,0 +1,26 @@
+{
+  "REG001": {
+    "register_id": "REG001",
+    "candidate_name": "John Doe",
+    "department": "Computer Science",
+    "position_applied": "Core Member",
+    "day_scholar_hosteler": "Day Scholar",
+    "phone_number": "9876543210",
+    "linkedin_profile": "https://linkedin.com/in/johndoe",
+    "github_profile": "https://github.com/johndoe",
+    "imported_at": "2026-01-15 10:00:00"
+  },
+  "REG002": {
+    "register_id": "REG002",
+    "candidate_name": "Jane Smith",
+    "department": "Information Technology",
+    "position_applied": "Core Member",
+    "day_scholar_hosteler": "Hosteler",
+    "phone_number": "9876543211",
+    "linkedin_profile": "https://linkedin.com/in/janesmith",
+    "github_profile": "https://github.com/janesmith",
+    "imported_at": "2026-01-15 10:05:00"
+  }
+}
+
+

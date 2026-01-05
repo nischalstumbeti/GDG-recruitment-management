@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Candidates - GDG Recruitment System{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #333;">All Candidates</h2>
+
+{% if candidates %}
+<table>
+    <thead>
+        <tr>
+            <th>Register ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Type</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for register_id, candidate in candidates.items() %}
+        <tr>
+            <td>{{ candidate.register_id }}</td>
+            <td><strong>{{ candidate.candidate_name }}</strong></td>
+            <td>{{ candidate.department }}</td>
+            <td>{{ candidate.position_applied|format_positions }}</td>
+            <td>{{ candidate.day_scholar_hosteler }}</td>
+            <td>{{ candidate.phone_number }}</td>
+            <td>
+                <a href="{{ url_for('candidate_detail', register_id=register_id) }}" class="btn" style="padding: 6px 12px; font-size: 12px;">View Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No candidates found.</p>
+</div>
+{% endif %}
+{% endblock %}
+

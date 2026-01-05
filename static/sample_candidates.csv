@@ -1,0 +1,8 @@
+Register ID,Candidate Name,Department,Position Applied,Day Scholar / Hosteler,Phone Number,LinkedIn Profile,GitHub Profile
+REG001,John Doe,Computer Science,Core Member,Day Scholar,9876543210,https://linkedin.com/in/johndoe,https://github.com/johndoe
+REG002,Jane Smith,Information Technology,Core Member,Hosteler,9876543211,https://linkedin.com/in/janesmith,https://github.com/janesmith
+REG003,Robert Johnson,Computer Science,Core Member,Day Scholar,9876543212,https://linkedin.com/in/robertjohnson,https://github.com/robertjohnson
+REG004,Emily Davis,Information Technology,Core Member,Hosteler,9876543213,https://linkedin.com/in/emilydavis,https://github.com/emilydavis
+REG005,Michael Wilson,Computer Science,Core Member,Day Scholar,9876543214,https://linkedin.com/in/michaelwilson,https://github.com/michaelwilson
+
+

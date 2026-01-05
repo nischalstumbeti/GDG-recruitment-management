@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Checklist - GDG Recruitment System{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #333;">Interview Checklist</h2>
+
+<div class="card">
+    <h3>{{ candidate.candidate_name }} ({{ candidate.register_id }})</h3>
+</div>
+
+<form method="POST" action="{{ url_for('checklist', register_id=candidate.register_id) }}">
+    <div class="card">
+        <h3>Technical Skills</h3>
+        <div class="form-group">
+            <label for="technical_skills">Technical Skills (JSON format: [{"technology": "Python", "skill_level": "Intermediate"}, ...])</label>
+            <textarea id="technical_skills" name="technical_skills" required>{% if checklist.technical_skills %}{{ checklist.technical_skills | tojson(indent=2) }}{% else %}[]{% endif %}</textarea>
+            <small style="color: #666;">Enter as JSON array. Example: [{"technology": "Python", "skill_level": "Beginner"}]</small>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Skills Assessment</h3>
+        <div class="form-group">
+            <label for="practical_experience">Practical Experience</label>
+            <select id="practical_experience" name="practical_experience">
+                <option value="">Select...</option>
+                <option value="Academic Project" {% if checklist.practical_experience == 'Academic Project' %}selected{% endif %}>Academic Project</option>
+                <option value="Personal Project" {% if checklist.practical_experience == 'Personal Project' %}selected{% endif %}>Personal Project</option>
+                <option value="Internship" {% if checklist.practical_experience == 'Internship' %}selected{% endif %}>Internship</option>
+                <option value="Work Experience" {% if checklist.practical_experience == 'Work Experience' %}selected{% endif %}>Work Experience</option>
+                <option value="None" {% if checklist.practical_experience == 'None' %}selected{% endif %}>None</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="communication_skills">Communication Skills</label>
+            <select id="communication_skills" name="communication_skills">
+                <option value="">Select...</option>
+                <option value="Excellent" {% if checklist.communication_skills == 'Excellent' %}selected{% endif %}>Excellent</option>
+                <option value="Good" {% if checklist.communication_skills == 'Good' %}selected{% endif %}>Good</option>
+                <option value="Average" {% if checklist.communication_skills == 'Average' %}selected{% endif %}>Average</option>
+                <option value="Needs Improvement" {% if checklist.communication_skills == 'Needs Improvement' %}selected{% endif %}>Needs Improvement</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="time_management">Time Management</label>
+            <select id="time_management" name="time_management">
+                <option value="">Select...</option>
+                <option value="Excellent" {% if checklist.time_management == 'Excellent' %}selected{% endif %}>Excellent</option>
+                <option value="Good" {% if checklist.time_management == 'Good' %}selected{% endif %}>Good</option>
+                <option value="Average" {% if checklist.time_management == 'Average' %}selected{% endif %}>Average</option>
+                <option value="Needs Improvement" {% if checklist.time_management == 'Needs Improvement' %}selected{% endif %}>Needs Improvement</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="leadership_ability">Leadership Ability</label>
+            <select id="leadership_ability" name="leadership_ability">
+                <option value="">Select...</option>
+                <option value="Excellent" {% if checklist.leadership_ability == 'Excellent' %}selected{% endif %}>Excellent</option>
+                <option value="Good" {% if checklist.leadership_ability == 'Good' %}selected{% endif %}>Good</option>
+                <option value="Average" {% if checklist.leadership_ability == 'Average' %}selected{% endif %}>Average</option>
+                <option value="Needs Improvement" {% if checklist.leadership_ability == 'Needs Improvement' %}selected{% endif %}>Needs Improvement</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Comments & Remarks</h3>
+        <div class="form-group">
+            <label for="interviewer_comments">Interviewer Comments</label>
+            <textarea id="interviewer_comments" name="interviewer_comments" rows="4">{% if checklist.interviewer_comments %}{{ checklist.interviewer_comments }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="faculty_comments">Faculty Comments</label>
+            <textarea id="faculty_comments" name="faculty_comments" rows="4">{% if checklist.faculty_comments %}{{ checklist.faculty_comments }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="remarks">Remarks</label>
+            <textarea id="remarks" name="remarks" rows="3">{% if checklist.remarks %}{{ checklist.remarks }}{% endif %}</textarea>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Interview Details</h3>
+        <div class="form-group">
+            <label for="interview_taken_by">Interview Taken By</label>
+            <input type="text" id="interview_taken_by" name="interview_taken_by" value="{% if checklist.interview_taken_by %}{{ checklist.interview_taken_by }}{% endif %}">
+        </div>
+
+        <div class="form-group">
+            <label for="reviewed_by">Reviewed By</label>
+            <input type="text" id="reviewed_by" name="reviewed_by" value="{% if checklist.reviewed_by %}{{ checklist.reviewed_by }}{% endif %}">
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button type="submit" class="btn btn-success">Save Checklist</button>
+        <a href="{{ url_for('candidate_detail', register_id=candidate.register_id) }}" class="btn btn-secondary" style="margin-left: 10px;">Cancel</a>
+    </div>
+</form>
+{% endblock %}
+

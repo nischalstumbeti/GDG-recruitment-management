@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - GDG On Campus{% endblock %}
+
+{% block content %}
+<div class="checklist-page-header">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <div class="page-header">
+        <h1>User Management</h1>
+        <p>Create, edit, and manage system users</p>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success">{{ success }}</div>
+{% endif %}
+
+<div class="form-container">
+    <!-- Create New User -->
+    <div class="form-section">
+        <h2>Create New User</h2>
+        <form method="POST" class="checklist-form">
+            <input type="hidden" name="action" value="create">
+            <div class="form-group">
+                <label for="user_id">User ID *</label>
+                <input type="text" id="user_id" name="user_id" required placeholder="e.g., interviewer1">
+            </div>
+            <div class="form-group">
+                <label for="passcode">Passcode *</label>
+                <input type="password" id="passcode" name="passcode" required placeholder="Enter passcode">
+            </div>
+            <div class="form-group">
+                <label for="role">Role *</label>
+                <select id="role" name="role" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="admin">Admin</option>
+                    <option value="interviewer">Interviewer</option>
+                    <option value="faculty_reviewer">Faculty Reviewer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Full name (for auto-fill in forms)">
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+
+    <!-- Existing Users -->
+    <div class="form-section">
+        <h2>Existing Users</h2>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Role</th>
+                        <th>Name</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_id, user_data in users.items() %}
+                    <tr>
+                        <td>{{ user_id }}</td>
+                        <td>
+                            <span class="badge {% if user_data.role == 'admin' %}badge-success{% elif user_data.role == 'interviewer' %}badge-warning{% else %}badge-info{% endif %}">
+                                {{ user_data.role|title|replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td>{{ user_data.get('name', 'N/A') }}</td>
+                        <td>{{ user_data.get('last_login', 'Never') }}</td>
+                        <td class="actions">
+                            <button type="button" class="btn btn-small btn-secondary" onclick="editUser('{{ user_id }}', '{{ user_data.get('role', '') }}', '{{ user_data.get('name', '') }}')">Edit</button>
+                            {% if user_id != 'admin' %}
+                            <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="delete_user_id" value="{{ user_id }}">
+                                <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit User</h2>
+            <form method="POST" class="checklist-form">
+                <input type="hidden" name="action" value="edit">
+                <input type="hidden" id="edit_user_id" name="edit_user_id">
+                <div class="form-group">
+                    <label for="edit_passcode">New Passcode (leave blank to keep current)</label>
+                    <input type="password" id="edit_passcode" name="edit_passcode" placeholder="Enter new passcode">
+                </div>
+                <div class="form-group">
+                    <label for="edit_role">Role</label>
+                    <select id="edit_role" name="edit_role">
+                        <option value="">-- Select Role --</option>
+                        <option value="admin">Admin</option>
+                        <option value="interviewer">Interviewer</option>
+                        <option value="faculty_reviewer">Faculty Reviewer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_name">Name</label>
+                    <input type="text" id="edit_name" name="edit_name" placeholder="Full name">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function editUser(userId, role, name) {
+    document.getElementById('edit_user_id').value = userId;
+    document.getElementById('edit_role').value = role;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.badge-info {
+    background-color: #E8F0FE;
+    color: var(--google-blue);
+    font-weight: 600;
+}
+</style>
+{% endblock %}
+

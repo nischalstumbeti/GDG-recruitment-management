@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GDG On Campus Interview Checklist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-page">
+    <div class="login-split-container">
+        <!-- Left Side - Branding -->
+        <div class="login-branding-section">
+            <div class="branding-content-wrapper">
+                <!-- GDG Logo with Circles -->
+                <div class="gdg-logo-container">
+                    <div class="gdg-circles-logo">
+                        <div class="circle circle-red"></div>
+                        <div class="circle circle-blue"></div>
+                        <div class="circle circle-yellow"></div>
+                        <div class="circle circle-green"></div>
+                    </div>
+                </div>
+                
+                <!-- Main Branding Text -->
+                <div class="gdg-branding-text">
+                    <div class="gdg-logo-above-text">
+                        <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE Logo" class="gdg-logo-image-login">
+                    </div>
+                    <h1 class="gdg-title">
+                        <span class="gdg-google">Google Developer Groups</span>
+                        <span class="gdg-on-campus">On Campus</span>
+                    </h1>
+                    <h2 class="login-subtitle">Kalasalingam Academy of Research & Education</h2>
+                    <p class="gdg-tagline">Empowering Developers, Inspiring Innovation</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="login-form-section">
+            <div class="login-box">
+                <div class="login-form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Please login to continue</p>
+                    <h3 class="login-year-box">Core Recruitment 2026</h3>
+                </div>
+                
+                {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                    <div class="form-group">
+                        <label for="user_id">User ID</label>
+                        <input type="text" id="user_id" name="user_id" required autofocus>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passcode">Passcode</label>
+                        <input type="password" id="passcode" name="passcode" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

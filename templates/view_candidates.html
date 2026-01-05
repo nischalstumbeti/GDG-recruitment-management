@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}View Candidates - GDG On Campus{% endblock %}
+
+{% block content %}
+<!-- Loading Animation -->
+<div id="loadingAnimation" class="loading-animation-container">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" style="display: none;">
+<div class="candidates-page-header">
+    <div class="gdg-circles-header-candidates">
+        <div class="circle-header circle-header-red"></div>
+        <div class="circle-header circle-header-blue"></div>
+        <div class="circle-header circle-header-yellow"></div>
+        <div class="circle-header circle-header-green"></div>
+    </div>
+    <div class="page-header-promo">
+        <div class="header-icon-wrapper">
+            <div class="promo-icon">VC</div>
+        </div>
+        <div class="header-content-wrapper">
+            <h1>Candidate Records</h1>
+            <p>View and manage all imported candidates</p>
+        </div>
+    </div>
+</div>
+
+<div class="candidates-container">
+    {% if candidates %}
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by Register ID, Name, Department, or Position...">
+            <span class="search-icon">S</span>
+        </div>
+        <div class="filter-wrapper">
+            <select id="filterDepartment" class="filter-select">
+                <option value="">All Departments</option>
+                {% set departments = candidates.values() | map(attribute='department') | unique | list | sort %}
+                {% for dept in departments %}
+                <option value="{{ dept }}">{{ dept }}</option>
+                {% endfor %}
+            </select>
+            <select id="filterStatus" class="filter-select">
+                <option value="">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+            </select>
+            <button type="button" id="clearFilters" class="btn-clear-filters">Clear Filters</button>
+        </div>
+    </div>
+    
+    <div class="table-container-promo">
+        <table class="data-table-promo" id="candidatesTable">
+            <thead>
+                <tr>
+                    <th>Register ID</th>
+                    <th>Candidate Name</th>
+                    <th>Department</th>
+                    <th>Position Applied</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="candidatesTableBody">
+                {% for reg_id, candidate in candidates.items() %}
+                <tr class="table-row-promo" data-register-id="{{ candidate.register_id|lower }}" data-name="{{ candidate.candidate_name|lower }}" data-department="{{ candidate.department|lower }}" data-position="{{ candidate.position_applied|format_positions|lower }}" data-status="{% if candidate.has_checklist %}completed{% else %}pending{% endif %}">
+                    <td class="cell-register-id">{{ candidate.register_id }}</td>
+                    <td class="cell-name">{{ candidate.candidate_name }}</td>
+                    <td class="cell-department">{{ candidate.department }}</td>
+                    <td class="cell-position">{{ candidate.position_applied|format_positions }}</td>
+                    <td class="cell-phone">{{ candidate.phone_number }}</td>
+                    <td>
+                        {% if candidate.has_checklist %}
+                        <span class="badge badge-success-promo">
+                            <span class="badge-icon">✓</span> Completed
+                        </span>
+                        {% else %}
+                        <span class="badge badge-warning-promo">
+                            <span class="badge-icon">—</span> Pending
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-promo">
+                        {% if candidate.has_checklist %}
+                        <a href="{{ url_for('view_checklist', register_id=reg_id) }}" class="btn-action btn-view">View</a>
+                        {% if user_role == 'admin' or user_role == 'interviewer' %}
+                        <a href="{{ url_for('edit_checklist', register_id=reg_id) }}" class="btn-action btn-edit">Edit</a>
+                        {% endif %}
+                        {% if user_role == 'faculty_reviewer' %}
+                        <a href="{{ url_for('edit_checklist', register_id=reg_id) }}" class="btn-action btn-edit">Review</a>
+                        {% endif %}
+                        <a href="{{ url_for('report', register_id=reg_id) }}" class="btn-action btn-report">Report</a>
+                        {% else %}
+                        {% if user_role == 'admin' or user_role == 'interviewer' %}
+                        <a href="{{ url_for('edit_checklist', register_id=reg_id) }}" class="btn-action btn-add">Add Checklist</a>
+                        {% else %}
+                        <span class="btn-action btn-disabled" style="opacity: 0.5; cursor: not-allowed;">Pending</span>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="action-buttons-promo">
+        <a href="{{ url_for('dashboard') }}" class="btn-promo btn-back">
+            <span class="btn-icon-large">DB</span>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+    {% else %}
+    <div class="empty-state-promo">
+        <div class="empty-icon">IC</div>
+        <h3>No candidates imported yet</h3>
+        <p>Start by importing candidate data from a CSV file</p>
+        {% if user_role == 'admin' %}
+        <a href="{{ url_for('import_candidates') }}" class="btn-promo btn-primary-promo">
+            <span class="btn-icon-large">IM</span>
+            <span>Import Candidates</span>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+</div>
+
+<script>
+// Show loading animation on page load (3 seconds)
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        document.getElementById('loadingAnimation').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    }, 1000);
+});
+
+// Search and Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const filterDepartment = document.getElementById('filterDepartment');
+    const filterStatus = document.getElementById('filterStatus');
+    const clearFilters = document.getElementById('clearFilters');
+    const tableBody = document.getElementById('candidatesTableBody');
+    
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const departmentFilter = filterDepartment.value.toLowerCase();
+        const statusFilter = filterStatus.value.toLowerCase();
+        
+        const rows = tableBody.querySelectorAll('tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const registerId = row.getAttribute('data-register-id') || '';
+            const name = row.getAttribute('data-name') || '';
+            const department = row.getAttribute('data-department') || '';
+            const position = row.getAttribute('data-position') || '';
+            const status = row.getAttribute('data-status') || '';
+            
+            const matchesSearch = !searchTerm || 
+                registerId.includes(searchTerm) || 
+                name.includes(searchTerm) || 
+                department.includes(searchTerm) || 
+                position.includes(searchTerm);
+            
+            const matchesDepartment = !departmentFilter || department === departmentFilter;
+            const matchesStatus = !statusFilter || status === statusFilter;
+            
+            if (matchesSearch && matchesDepartment && matchesStatus) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Show message if no results
+        let noResultsMsg = document.getElementById('noResultsMessage');
+        if (visibleCount === 0 && rows.length > 0) {
+            if (!noResultsMsg) {
+                noResultsMsg = document.createElement('tr');
+                noResultsMsg.id = 'noResultsMessage';
+                noResultsMsg.innerHTML = '<td colspan="7" style="text-align: center; padding: 2rem; color: #666;">No candidates found matching your search criteria.</td>';
+                tableBody.appendChild(noResultsMsg);
+            }
+        } else if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+    
+    searchInput.addEventListener('input', filterTable);
+    filterDepartment.addEventListener('change', filterTable);
+    filterStatus.addEventListener('change', filterTable);
+    
+    clearFilters.addEventListener('click', function() {
+        searchInput.value = '';
+        filterDepartment.value = '';
+        filterStatus.value = '';
+        filterTable();
+    });
+});
+</script>
+{% endblock %}
+

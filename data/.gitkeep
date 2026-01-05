@@ -1,0 +1,4 @@
+# This file ensures the data directory is tracked by git
+# Actual data files (users.json, candidates.json, checklists.json) should not be committed
+
+

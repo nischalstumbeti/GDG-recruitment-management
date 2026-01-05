@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}View Checklist - GDG On Campus{% endblock %}
+
+{% block content %}
+<!-- Loading Animation -->
+<div id="loadingAnimation" class="loading-animation-container">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" class="edit-checklist-container">
+{% if checklist %}
+<!-- Official Header with Title Only -->
+<div class="official-header-checklist">
+    <div class="header-title-section">
+        <h2 class="form-title">Interview Checklist Evaluation Form</h2>
+        <p class="form-subtitle">Core Recruitment 2026</p>
+    </div>
+</div>
+
+<!-- Personal Details Section -->
+<div class="personal-details-section">
+    <h3 class="section-heading">Candidate Personal Details</h3>
+    <div class="personal-details-grid">
+        <div class="detail-row">
+            <span class="detail-label detail-label-blue">Candidate Name:</span>
+            <span class="detail-value">{{ candidate.candidate_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label detail-label-red">Register ID:</span>
+            <span class="detail-value">{{ candidate.register_id }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label detail-label-green">Department:</span>
+            <span class="detail-value">{{ candidate.department }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label detail-label-yellow">Position Applied:</span>
+            <span class="detail-value">{{ candidate.position_applied|format_positions }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label detail-label-blue">Day Scholar / Hosteler:</span>
+            <span class="detail-value">{{ candidate.day_scholar_hosteler }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label detail-label-red">Phone Number:</span>
+            <span class="detail-value">{{ candidate.phone_number }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <div class="checklist-view-form">
+        {% if checklist.technical_skills %}
+        <div class="form-section">
+            <h2>Technical Section</h2>
+            <div class="view-skills-container">
+                {% for skill in checklist.technical_skills %}
+                <div class="view-skill-row">
+                    <div class="view-skill-item">
+                        <label>Technology / Skill</label>
+                        <div class="view-skill-value">{{ skill.technology }}</div>
+                    </div>
+                    <div class="view-skill-item">
+                        <label>Skill Level</label>
+                        <div class="view-skill-value">{{ skill.skill_level }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if checklist.practical_experience %}
+        <div class="form-section">
+            <h2>Practical Experience</h2>
+            <div class="view-practical-experience">
+                <div class="view-experience-badge {% if checklist.practical_experience == 'Academic Project' %}badge-academic{% elif checklist.practical_experience == 'Personal Project' %}badge-personal{% else %}badge-no-experience{% endif %}">
+                    {{ checklist.practical_experience }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="form-section">
+            <h2>Interviewer Evaluation</h2>
+            <div class="view-evaluation-grid">
+                <div class="view-evaluation-item">
+                    <label>Communication Skills</label>
+                    <div class="view-evaluation-value">{{ checklist.communication_skills or 'Not evaluated' }}</div>
+                </div>
+                <div class="view-evaluation-item">
+                    <label>Time Management</label>
+                    <div class="view-evaluation-value">{{ checklist.time_management or 'Not evaluated' }}</div>
+                </div>
+                <div class="view-evaluation-item">
+                    <label>Leadership Ability</label>
+                    <div class="view-evaluation-value">{{ checklist.leadership_ability or 'Not evaluated' }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>Comments</h2>
+            {% if checklist.interviewer_comments %}
+            <div class="view-comment-box">
+                <label>Interviewer Comments</label>
+                <div class="view-comment-text">{{ checklist.interviewer_comments }}</div>
+            </div>
+            {% endif %}
+            
+            {% if checklist.faculty_comments %}
+            <div class="view-comment-box">
+                <label>Faculty Mentor Comments</label>
+                <div class="view-comment-text">{{ checklist.faculty_comments }}</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-section">
+            <h2>Internal Official Use</h2>
+            <div class="view-official-grid">
+                {% if checklist.interview_taken_by %}
+                <div class="view-official-item">
+                    <label>Interview Taken By</label>
+                    <div class="view-official-value">{{ checklist.interview_taken_by }}</div>
+                </div>
+                {% endif %}
+                {% if checklist.reviewed_by %}
+                <div class="view-official-item">
+                    <label>Reviewed By</label>
+                    <div class="view-official-value">{{ checklist.reviewed_by }}</div>
+                </div>
+                {% endif %}
+                {% if checklist.remarks %}
+                <div class="view-official-item view-official-full">
+                    <label>Remarks</label>
+                    <div class="view-official-value">{{ checklist.remarks }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{{ url_for('edit_checklist', register_id=candidate.register_id) }}" class="btn btn-primary">Edit Checklist</a>
+            <a href="{{ url_for('report', register_id=candidate.register_id) }}" class="btn btn-info">View Report</a>
+            <a href="{{ url_for('view_candidates') }}" class="btn btn-secondary">Back to Candidates</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="empty-state-checklist">
+    <div class="empty-icon-checklist">CL</div>
+    <h3>No checklist found for this candidate</h3>
+    <p>Start by adding an interview checklist evaluation</p>
+    <div class="empty-actions">
+        <a href="{{ url_for('edit_checklist', register_id=candidate.register_id) }}" class="btn btn-primary">Add Checklist</a>
+        <a href="{{ url_for('view_candidates') }}" class="btn btn-secondary">Back to Candidates</a>
+    </div>
+</div>
+{% endif %}
+</div>
+
+<script>
+// Show loading animation on page load (3 seconds)
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        document.getElementById('loadingAnimation').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    }, 1000);
+});
+</script>
+{% endblock %}

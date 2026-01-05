@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Checklist Report - {{ candidate.candidate_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='print.css') }}" media="print">
+</head>
+<body class="report-page">
+    <div class="report-container">
+        <div class="watermark-bg">
+            <div class="watermark-logo"></div>
+        </div>
+        <div class="report-header">
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE Logo" class="report-logo-image">
+            </div>
+            <div class="header-content">
+                <h1>GDG On Campus</h1>
+                <h2>Kalasalingam Academy of Research & Education</h2>
+                <h3>Core Recruitment 2026 - Interview Checklist Report</h3>
+            </div>
+            <div class="header-logo-right">
+                <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE Logo" class="report-logo-image">
+            </div>
+        </div>
+        
+        <div class="report-content">
+            <section class="report-section">
+                <h2>Candidate Details</h2>
+                <table class="report-table">
+                    <tr>
+                        <th>Register ID</th>
+                        <td>{{ candidate.register_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <td>{{ candidate.candidate_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Department</th>
+                        <td>{{ candidate.department }}</td>
+                    </tr>
+                    <tr>
+                        <th>Position Applied</th>
+                        <td>{{ candidate.position_applied|format_positions }}</td>
+                    </tr>
+                    <tr>
+                        <th>Day Scholar / Hosteler</th>
+                        <td>{{ candidate.day_scholar_hosteler }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone Number</th>
+                        <td>{{ candidate.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>LinkedIn Profile</th>
+                        <td><a href="{{ candidate.linkedin_profile }}" target="_blank">{{ candidate.linkedin_profile }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>GitHub Profile</th>
+                        <td><a href="{{ candidate.github_profile }}" target="_blank">{{ candidate.github_profile }}</a></td>
+                    </tr>
+                </table>
+            </section>
+            
+            {% if checklist %}
+            <section class="report-section">
+                <h2>Technical Skills</h2>
+                {% if checklist.technical_skills %}
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Technology / Skill</th>
+                            <th>Skill Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill in checklist.technical_skills %}
+                        <tr>
+                            <td>{{ skill.technology }}</td>
+                            <td>{{ skill.skill_level }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No technical skills recorded.</p>
+                {% endif %}
+            </section>
+            
+            <section class="report-section">
+                <h2>Practical Experience</h2>
+                <p><strong>{{ checklist.practical_experience or 'Not specified' }}</strong></p>
+            </section>
+            
+            <section class="report-section">
+                <h2>Interviewer Evaluation</h2>
+                <table class="report-table">
+                    <tr>
+                        <th>Communication Skills</th>
+                        <td>{{ checklist.communication_skills or 'Not evaluated' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Time Management</th>
+                        <td>{{ checklist.time_management or 'Not evaluated' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Leadership Ability</th>
+                        <td>{{ checklist.leadership_ability or 'Not evaluated' }}</td>
+                    </tr>
+                </table>
+            </section>
+            
+            {% if checklist.interviewer_comments %}
+            <section class="report-section">
+                <h2>Interviewer Comments</h2>
+                <p>{{ checklist.interviewer_comments }}</p>
+            </section>
+            {% endif %}
+            
+            {% if checklist.faculty_comments %}
+            <section class="report-section">
+                <h2>Faculty Mentor Comments</h2>
+                <p>{{ checklist.faculty_comments }}</p>
+            </section>
+            {% endif %}
+            
+            <section class="report-section">
+                <h2>Internal Official Use</h2>
+                <table class="report-table">
+                    <tr>
+                        <th>Interview Taken By</th>
+                        <td>{{ checklist.interview_taken_by or 'Not specified' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Reviewed By</th>
+                        <td>{{ checklist.reviewed_by or 'Not specified' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Remarks</th>
+                        <td>{{ checklist.remarks or 'No remarks' }}</td>
+                    </tr>
+                </table>
+            </section>
+            {% else %}
+            <section class="report-section">
+                <p>No checklist data available for this candidate.</p>
+            </section>
+            {% endif %}
+        </div>
+        
+        <div class="report-footer">
+            <div class="footer-info">
+                <p>Generated on: {{ checklist.updated_at if checklist else 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="report-actions no-print">
+        <button onclick="window.print()" class="btn btn-primary">Print Report</button>
+        <a href="{{ url_for('download_pdf', register_id=candidate.register_id) }}" class="btn btn-success">Download PDF</a>
+        <a href="{{ url_for('view_checklist', register_id=candidate.register_id) }}" class="btn btn-secondary">Back to Checklist</a>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate Details - GDG Recruitment System{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px; color: #333;">Candidate Details</h2>
+
+<div class="card">
+    <h3>Personal Information</h3>
+    <table>
+        <tr>
+            <td><strong>Register ID:</strong></td>
+            <td>{{ candidate.register_id }}</td>
+        </tr>
+        <tr>
+            <td><strong>Name:</strong></td>
+            <td>{{ candidate.candidate_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Department:</strong></td>
+            <td>{{ candidate.department }}</td>
+        </tr>
+        <tr>
+            <td><strong>Position Applied:</strong></td>
+            <td>{{ candidate.position_applied|format_positions }}</td>
+        </tr>
+        <tr>
+            <td><strong>Type:</strong></td>
+            <td>{{ candidate.day_scholar_hosteler }}</td>
+        </tr>
+        <tr>
+            <td><strong>Phone:</strong></td>
+            <td>{{ candidate.phone_number }}</td>
+        </tr>
+        <tr>
+            <td><strong>LinkedIn:</strong></td>
+            <td><a href="{{ candidate.linkedin_profile }}" target="_blank">{{ candidate.linkedin_profile }}</a></td>
+        </tr>
+        <tr>
+            <td><strong>GitHub:</strong></td>
+            <td><a href="{{ candidate.github_profile }}" target="_blank">{{ candidate.github_profile }}</a></td>
+        </tr>
+        <tr>
+            <td><strong>Imported At:</strong></td>
+            <td>{{ candidate.imported_at }}</td>
+        </tr>
+    </table>
+</div>
+
+{% if checklist %}
+<div class="card">
+    <h3>Interview Checklist</h3>
+    <table>
+        <tr>
+            <td><strong>Technical Skills:</strong></td>
+            <td>
+                {% if checklist.technical_skills %}
+                    {% for skill in checklist.technical_skills %}
+                        {{ skill.technology }} ({{ skill.skill_level }}){% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Not specified
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Practical Experience:</strong></td>
+            <td>{{ checklist.practical_experience or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Communication Skills:</strong></td>
+            <td>{{ checklist.communication_skills or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Time Management:</strong></td>
+            <td>{{ checklist.time_management or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Leadership Ability:</strong></td>
+            <td>{{ checklist.leadership_ability or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Interviewer Comments:</strong></td>
+            <td>{{ checklist.interviewer_comments or 'No comments' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Faculty Comments:</strong></td>
+            <td>{{ checklist.faculty_comments or 'No comments' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Interview Taken By:</strong></td>
+            <td>{{ checklist.interview_taken_by or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Reviewed By:</strong></td>
+            <td>{{ checklist.reviewed_by or 'Not specified' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Remarks:</strong></td>
+            <td>{{ checklist.remarks or 'No remarks' }}</td>
+        </tr>
+        {% if checklist.created_at %}
+        <tr>
+            <td><strong>Created At:</strong></td>
+            <td>{{ checklist.created_at }}</td>
+        </tr>
+        {% endif %}
+        {% if checklist.updated_at %}
+        <tr>
+            <td><strong>Updated At:</strong></td>
+            <td>{{ checklist.updated_at }}</td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p>No interview checklist available for this candidate.</p>
+</div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{{ url_for('checklist', register_id=candidate.register_id) }}" class="btn">
+        {% if checklist %}Edit Checklist{% else %}Create Checklist{% endif %}
+    </a>
+    <a href="{{ url_for('candidates') }}" class="btn btn-secondary" style="margin-left: 10px;">Back to Candidates</a>
+</div>
+{% endblock %}
+

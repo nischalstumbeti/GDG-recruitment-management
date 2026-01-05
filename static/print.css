@@ -1,0 +1,75 @@
+/* Print Styles */
+@media print {
+    * {
+        font-family: Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    body {
+        background: white;
+        font-family: Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .no-print,
+    .navbar,
+    .footer,
+    .report-actions {
+        display: none !important;
+    }
+    
+    .report-container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+        position: relative;
+    }
+    
+    .watermark-bg {
+        display: block !important;
+        opacity: 0.15 !important;
+        position: fixed !important;
+    }
+    
+    .watermark-logo {
+        display: block !important;
+        opacity: 0.12 !important;
+    }
+    
+    .report-header {
+        page-break-after: avoid;
+        background: white !important;
+        border: 2px solid #000 !important;
+    }
+    
+    .report-section {
+        page-break-inside: avoid;
+        margin-bottom: 1.5rem;
+    }
+    
+    .report-table {
+        page-break-inside: avoid;
+        border: 1px solid #000 !important;
+    }
+    
+    .report-table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    
+    a {
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+    
+    @page {
+        margin: 1.5cm;
+        @bottom-right {
+            content: "KARE ACM SIGBED - Confidential";
+            font-size: 8pt;
+            color: #666;
+        }
+    }
+}
+
+

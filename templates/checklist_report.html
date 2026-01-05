@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Checklist - GDG On Campus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 1.2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            color: #000;
+            background: #fff;
+            width: 21cm;
+            min-height: 29.7cm;
+            margin: 0 auto;
+            padding: 0.4cm;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        /* Watermark */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{{ url_for('static', filename='Watermark.jpg') }}");
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5cm;
+            border-bottom: 2px solid #000;
+            padding-bottom: 0.2cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.3cm;
+        }
+
+        .header-logo-image {
+            width: 1.5cm;
+            height: auto;
+            max-height: 1.5cm;
+            object-fit: contain;
+            display: block;
+        }
+
+        .header-left-text {
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        .header-center {
+            text-align: center;
+            flex: 1;
+            padding: 0 0.5cm;
+        }
+
+        .header-center h1 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 0.1cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .header-center h2 {
+            font-size: 10pt;
+            font-weight: normal;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.3cm;
+        }
+
+        .header-right-text {
+            font-weight: bold;
+            font-size: 9pt;
+            text-align: right;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            line-height: 1.3;
+        }
+
+        /* Title Section */
+        .title-section {
+            text-align: center;
+            margin: 0.3cm 0 0.5cm 0;
+        }
+
+        .title-section h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 0.05cm;
+            letter-spacing: 0.03cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .title-section h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 0.05cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        /* Personnel Section */
+        .section-title {
+            font-size: 11pt;
+            font-weight: bold;
+            margin: 0.4cm 0 0.2cm 0;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .personnel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3cm;
+            margin-bottom: 0.6cm;
+        }
+
+        .personnel-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 0.15cm;
+        }
+
+        .personnel-label {
+            font-weight: bold;
+            min-width: 4cm;
+            margin-right: 0.3cm;
+        }
+
+        .personnel-value {
+            flex: 1;
+            border-bottom: 1px solid #000;
+            min-height: 0.5cm;
+            padding-bottom: 0.1cm;
+        }
+
+        /* Technical Section */
+        .technical-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.4cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .technical-table th,
+        .technical-table td {
+            border: 1px solid #000;
+            padding: 0.2cm;
+            text-align: center;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 9pt;
+        }
+
+        .technical-table th {
+            font-weight: bold;
+            background: #f0f0f0;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        .technical-table .sno {
+            width: 10%;
+        }
+
+        .technical-table .tech {
+            width: 60%;
+        }
+
+        .technical-table .level {
+            width: 30%;
+        }
+
+        /* Practical Experience Section */
+        .practical-experience {
+            margin: 0.4cm 0;
+        }
+
+        .practical-experience .section-title {
+            margin-bottom: 0.2cm;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1cm;
+            margin-left: 0.5cm;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.2cm;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 0.4cm;
+            height: 0.4cm;
+            border: 1px solid #000;
+            appearance: none;
+            -webkit-appearance: none;
+            position: relative;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.3cm;
+            color: #000;
+        }
+
+        .checkbox-item label {
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        /* Soft Skills Section */
+        .soft-skills {
+            margin: 0.4cm 0;
+        }
+
+        .soft-skills .section-title {
+            margin-bottom: 0.2cm;
+        }
+
+        .soft-skills-subtitle {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-left: 0.5cm;
+            margin-bottom: 0.2cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin: 0.4cm 0;
+        }
+
+        .comment-box {
+            width: 100%;
+            min-height: 2cm;
+            border: 1px solid #000;
+            padding: 0.2cm;
+            margin-top: 0.15cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 9pt;
+            resize: none;
+            background: #fff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .comment-label {
+            font-weight: bold;
+            margin-top: 0.3cm;
+            margin-bottom: 0.15cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 10pt;
+        }
+
+        /* Internal Section */
+        .internal-section {
+            margin: 0.4cm 0;
+            border-top: 2px dashed #000;
+            padding-top: 0.3cm;
+        }
+
+        .internal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3cm;
+            margin-bottom: 0.4cm;
+        }
+
+        .internal-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 0.2cm;
+        }
+
+        .internal-label {
+            font-weight: bold;
+            min-width: 3.5cm;
+            margin-right: 0.3cm;
+        }
+
+        .internal-value {
+            flex: 1;
+            border-bottom: 1px solid #000;
+            min-height: 0.5cm;
+            padding-bottom: 0.1cm;
+        }
+
+        .remarks-section {
+            margin-top: 0.3cm;
+        }
+
+        .remarks-label {
+            font-weight: bold;
+            margin-bottom: 0.2cm;
+        }
+
+        .remarks-box {
+            width: 100%;
+            min-height: 1.5cm;
+            border: 1px solid #000;
+            padding: 0.2cm;
+            margin-top: 0.15cm;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 9pt;
+            resize: none;
+            background: #fff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Print Styles */
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+
+            body {
+                width: 100%;
+                margin: 0;
+                padding: 0.3cm;
+                border: none;
+                font-size: 9pt;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .header {
+                margin-bottom: 0.4cm;
+                padding-bottom: 0.15cm;
+            }
+
+            .title-section {
+                margin: 0.2cm 0 0.4cm 0;
+            }
+
+            .title-section h1 {
+                font-size: 14pt;
+            }
+
+            .title-section h2 {
+                font-size: 12pt;
+            }
+
+            .section-title {
+                font-size: 10pt;
+                margin: 0.3cm 0 0.15cm 0;
+            }
+
+            .personnel-row {
+                margin-bottom: 0.1cm;
+            }
+
+            .technical-table th,
+            .technical-table td {
+                padding: 0.15cm;
+                font-size: 8pt;
+            }
+
+            .comment-box {
+                min-height: 1.5cm;
+                font-size: 8pt;
+                padding: 0.15cm;
+            }
+
+            .remarks-box {
+                min-height: 1.2cm;
+                font-size: 8pt;
+                padding: 0.15cm;
+            }
+
+            .practical-experience,
+            .soft-skills,
+            .comments-section,
+            .internal-section {
+                margin: 0.3cm 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE Logo" class="header-logo-image">
+            <div class="header-left-text">GDG On Campus KARE</div>
+        </div>
+        <div class="header-center">
+            <h1>Google Developer Groups</h1>
+            <h2>On Campus</h2>
+            <h2>Kalasalingam Academy of Research & Education</h2>
+        </div>
+        <div class="header-right">
+            <div class="header-right-text">Google Developer Groups<br>On Campus<br>Kalasalingam Academy<br>Of Research & Education</div>
+            <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE Logo" class="header-logo-image">
+        </div>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+        <h1>CORE RECRUITMENT – 2026</h1>
+        <h2>Interview Checklist</h2>
+    </div>
+
+    <!-- Personnel Section -->
+    <div class="section-title">Personnel Section :</div>
+    <div class="personnel-grid">
+        <div>
+            <div class="personnel-row">
+                <span class="personnel-label">Register id :</span>
+                <span class="personnel-value">{{ candidate.register_id if candidate else '' }}</span>
+            </div>
+            <div class="personnel-row">
+                <span class="personnel-label">Candidate Name :</span>
+                <span class="personnel-value">{{ candidate.candidate_name if candidate else '' }}</span>
+            </div>
+            <div class="personnel-row">
+                <span class="personnel-label">Dayscholar / Hosteler:</span>
+                <span class="personnel-value">{{ candidate.day_scholar_hosteler if candidate else '' }}</span>
+            </div>
+        </div>
+        <div>
+            <div class="personnel-row">
+                <span class="personnel-label">Department :</span>
+                <span class="personnel-value">{{ candidate.department if candidate else '' }}</span>
+            </div>
+            <div class="personnel-row">
+                <span class="personnel-label">Position Applied :</span>
+                <span class="personnel-value">{{ candidate.position_applied|format_positions if candidate else '' }}</span>
+            </div>
+            <div class="personnel-row">
+                <span class="personnel-label">Phone no :</span>
+                <span class="personnel-value">{{ candidate.phone_number if candidate else '' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Section -->
+    <div class="section-title">Technical Section :</div>
+    <table class="technical-table">
+        <thead>
+            <tr>
+                <th class="sno">S No</th>
+                <th class="tech">Technology / Skill</th>
+                <th class="level">Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if checklist and checklist.technical_skills %}
+                {% for skill in checklist.technical_skills %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ skill.technology }}</td>
+                    <td>{{ skill.skill_level }}</td>
+                </tr>
+                {% endfor %}
+                {% for i in range(4 - (checklist.technical_skills|length)) %}
+                <tr>
+                    <td>{{ (checklist.technical_skills|length) + loop.index }}</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                {% for i in range(4) %}
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- Practical Experience Section -->
+    <div class="practical-experience">
+        <div class="section-title">➤ Practical Experience</div>
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.practical_experience == 'Academic Project' %}checked{% endif %} disabled>
+                <label>Academic Project</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.practical_experience == 'Personal Project' %}checked{% endif %} disabled>
+                <label>Personal Project</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.practical_experience == 'No Prior Experience' %}checked{% endif %} disabled>
+                <label>No prior Experience</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Soft Skills Section -->
+    <div class="soft-skills">
+        <div class="section-title">Interviewer Evaluation Section:</div>
+        <div class="soft-skills-subtitle">➤ Softskills</div>
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.communication_skills and checklist.communication_skills != '' %}checked{% endif %} disabled>
+                <label>Communication Skills</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.time_management and checklist.time_management != '' %}checked{% endif %} disabled>
+                <label>Time Management</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" {% if checklist and checklist.leadership_ability and checklist.leadership_ability != '' %}checked{% endif %} disabled>
+                <label>Leadership Ability</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <div class="comment-label">Interviewer Comments :</div>
+        <textarea class="comment-box" readonly>{{ checklist.interviewer_comments if checklist and checklist.interviewer_comments else '' }}</textarea>
+
+        <div class="comment-label">Faculty Mentor Comments :</div>
+        <textarea class="comment-box" readonly>{{ checklist.faculty_comments if checklist and checklist.faculty_comments else '' }}</textarea>
+    </div>
+
+    <!-- Internal Official Use Only Section -->
+    <div class="internal-section">
+        <div class="section-title">Internal Offical Use Only</div>
+        <div class="internal-grid">
+            <div>
+                <div class="internal-row">
+                    <span class="internal-label">Interview Taken By</span>
+                    <span class="internal-value">{{ checklist.interview_taken_by if checklist and checklist.interview_taken_by else '' }}</span>
+                </div>
+            </div>
+            <div>
+                <div class="internal-row">
+                    <span class="internal-label">Reviewed by</span>
+                    <span class="internal-value">{{ checklist.reviewed_by if checklist and checklist.reviewed_by else '' }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="remarks-section">
+            <div class="remarks-label">Remarks :</div>
+            <textarea class="remarks-box" readonly>{{ checklist.remarks if checklist and checklist.remarks else '' }}</textarea>
+        </div>
+    </div>
+</body>
+</html>

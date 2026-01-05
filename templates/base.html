@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GDG On Campus - Interview Checklist{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if session.user_id %}
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='GDG on Campus KARE.jpg') }}" alt="GDG On Campus KARE" class="sidebar-logo">
+                <h2 class="sidebar-title">Recruitment Management System</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    <a href="{{ url_for('dashboard') }}" class="nav-item">
+                        <span class="nav-icon">D</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    <a href="{{ url_for('view_candidates') }}" class="nav-item">
+                        <span class="nav-icon">V</span>
+                        <span class="nav-text">View Candidates</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    {% if session.role == 'admin' %}
+                    <a href="{{ url_for('import_candidates') }}" class="nav-item">
+                        <span class="nav-icon">I</span>
+                        <span class="nav-text">Import Candidates</span>
+                    </a>
+                    {% endif %}
+                    {% if session.role == 'admin' or session.role == 'interviewer' %}
+                    <a href="{{ url_for('add_checklist') }}" class="nav-item">
+                        <span class="nav-icon">A</span>
+                        <span class="nav-text">Add Checklist</span>
+                    </a>
+                    {% endif %}
+                    {% if session.role == 'faculty_reviewer' %}
+                    <a href="{{ url_for('view_candidates') }}" class="nav-item">
+                        <span class="nav-icon">A</span>
+                        <span class="nav-text">Review Checklists</span>
+                    </a>
+                    {% endif %}
+                    {% if session.role == 'admin' %}
+                    <a href="{{ url_for('manage_users') }}" class="nav-item">
+                        <span class="nav-icon">U</span>
+                        <span class="nav-text">Manage Users</span>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="nav-item nav-logout">
+                        <span class="nav-icon">L</span>
+                        <span class="nav-text">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+    {% else %}
+    <main class="container">
+    {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    
+    {% if session.user_id %}
+    </div>
+    {% endif %}
+    
+    <footer class="footer">
+        <p>&copy; 2026 GDG On Campus - Kalasalingam Academy of Research & Education. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+

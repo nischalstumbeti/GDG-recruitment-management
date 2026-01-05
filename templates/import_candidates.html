@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Import Candidates - GDG On Campus{% endblock %}
+
+{% block content %}
+<!-- Loading Animation -->
+<div id="loadingAnimation" class="loading-animation-container">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" style="display: none;">
+<div class="page-header">
+    <h1>Import Candidates</h1>
+    <p>Upload a CSV file containing candidate basic details</p>
+</div>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success">{{ success }}</div>
+{% if errors %}
+<div class="alert alert-warning">
+    <strong>Errors:</strong>
+    <ul>
+        {% for err in errors %}
+        <li>{{ err }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endif %}
+
+<div class="form-container">
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+            <label for="csv_file">Select CSV File</label>
+            <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+            <small>Required columns: Register ID, Candidate Name, Department, Position Applied, Day Scholar / Hosteler, Phone Number, LinkedIn Profile, GitHub Profile</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Upload and Import</button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+    
+    <div class="info-box">
+        <h3>CSV Format Requirements</h3>
+        <p>The CSV file must contain the following columns (case-sensitive):</p>
+        <ul>
+            <li><strong>Register ID</strong> - Unique identifier for each candidate</li>
+            <li><strong>Candidate Name</strong> - Full name of the candidate</li>
+            <li><strong>Department</strong> - Department name</li>
+            <li><strong>Position Applied</strong> - Position the candidate applied for</li>
+            <li><strong>Day Scholar / Hosteler</strong> - Day Scholar or Hosteler</li>
+            <li><strong>Phone Number</strong> - Contact phone number</li>
+            <li><strong>LinkedIn Profile</strong> - LinkedIn profile URL</li>
+            <li><strong>GitHub Profile</strong> - GitHub profile URL</li>
+        </ul>
+        <p><a href="{{ url_for('static', filename='sample_candidates.csv') }}" download>Download Sample CSV</a></p>
+    </div>
+</div>
+</div>
+
+<script>
+// Show loading animation on page load (3 seconds)
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        document.getElementById('loadingAnimation').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    }, 1000);
+});
+</script>
+{% endblock %}
+
+

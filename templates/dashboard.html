@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - GDG On Campus{% endblock %}
+
+{% block content %}
+<!-- Loading Animation -->
+<div id="loadingAnimation" class="loading-animation-container">
+    <div class="gdg-circles-header-checklist">
+        <div class="circle-checklist circle-checklist-red"></div>
+        <div class="circle-checklist circle-checklist-blue"></div>
+        <div class="circle-checklist circle-checklist-yellow"></div>
+        <div class="circle-checklist circle-checklist-green"></div>
+    </div>
+    <p class="loading-text">Loading...</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" style="display: none;">
+<div class="dashboard">
+    <!-- User Information Section -->
+    <div class="user-info-section">
+        <div class="user-info-card">
+            <div class="info-row">
+                <span class="info-label">User ID:</span>
+                <span class="info-value">{{ user_id }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Current Time:</span>
+                <span class="info-value" id="currentTime">{{ current_time }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Last Login:</span>
+                <span class="info-value">{{ last_login }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">IP Address:</span>
+                <span class="info-value">{{ ip_address }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Location:</span>
+                <span class="info-value">{{ location }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">ISP:</span>
+                <span class="info-value">{{ isp }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="statistics-section">
+        <h2 class="section-title">System Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-card stat-card-blue">
+                <div class="stat-number">{{ total_candidates }}</div>
+                <div class="stat-label">Total Candidates</div>
+            </div>
+            <div class="stat-card stat-card-green">
+                <div class="stat-number">{{ total_checklists }}</div>
+                <div class="stat-label">Completed Checklists</div>
+            </div>
+            <div class="stat-card stat-card-yellow">
+                <div class="stat-number">{{ pending_checklists }}</div>
+                <div class="stat-label">Pending Evaluations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="dashboard-grid">
+            {% if user_role == 'admin' %}
+            <div class="dashboard-card card-blue">
+                <div class="card-header">
+                    <div class="card-icon-wrapper card-icon-blue">
+                        <span class="card-icon-text">IM</span>
+                    </div>
+                    <h3>Import Candidates</h3>
+                </div>
+                <p class="card-description">Upload CSV file to import candidate basic details into the system</p>
+                <a href="{{ url_for('import_candidates') }}" class="btn btn-primary btn-card">Import Candidates</a>
+            </div>
+            {% endif %}
+            
+            {% if user_role == 'admin' or user_role == 'interviewer' %}
+            <div class="dashboard-card card-red">
+                <div class="card-header">
+                    <div class="card-icon-wrapper card-icon-red">
+                        <span class="card-icon-text">CL</span>
+                    </div>
+                    <h3>Add / Update Checklist</h3>
+                </div>
+                <p class="card-description">Add or update interview checklist evaluations for candidates</p>
+                <a href="{{ url_for('add_checklist') }}" class="btn btn-primary btn-card">Add Checklist</a>
+            </div>
+            {% endif %}
+            
+            {% if user_role == 'faculty_reviewer' %}
+            <div class="dashboard-card card-red">
+                <div class="card-header">
+                    <div class="card-icon-wrapper card-icon-red">
+                        <span class="card-icon-text">RV</span>
+                    </div>
+                    <h3>Review Checklists</h3>
+                </div>
+                <p class="card-description">Review and add faculty comments to interview checklists</p>
+                <a href="{{ url_for('view_candidates') }}" class="btn btn-primary btn-card">Review Checklists</a>
+            </div>
+            {% endif %}
+            
+            <div class="dashboard-card card-yellow">
+                <div class="card-header">
+                    <div class="card-icon-wrapper card-icon-yellow">
+                        <span class="card-icon-text">VC</span>
+                    </div>
+                    <h3>View Candidates</h3>
+                </div>
+                <p class="card-description">View and manage all candidate records and their evaluation status</p>
+                <a href="{{ url_for('view_candidates') }}" class="btn btn-primary btn-card">View Records</a>
+            </div>
+            
+            <div class="dashboard-card card-green">
+                <div class="card-header">
+                    <div class="card-icon-wrapper card-icon-green">
+                        <span class="card-icon-text">RP</span>
+                    </div>
+                    <h3>Reports</h3>
+                </div>
+                <p class="card-description">Generate, view, and print official interview checklist reports</p>
+                <a href="{{ url_for('view_candidates') }}" class="btn btn-primary btn-card">View Reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    // Update current time every second
+    function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.getFullYear() + '-' + 
+            String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(now.getDate()).padStart(2, '0') + ' ' + 
+            String(now.getHours()).padStart(2, '0') + ':' + 
+            String(now.getMinutes()).padStart(2, '0') + ':' + 
+            String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('currentTime').textContent = timeString;
+    }
+    
+    // Update immediately and then every second
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 1000);
+    
+    // Show loading animation on page load (1 second)
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loadingAnimation').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }, 1000);
+    });
+</script>
+{% endblock %}
+
+
