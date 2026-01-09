@@ -49,8 +49,22 @@
 
     <!-- Statistics Section -->
     <div class="statistics-section">
-        <h2 class="section-title">System Overview</h2>
+        <h2 class="section-title">{% if user_role == 'faculty_reviewer' %}Review Overview{% else %}System Overview{% endif %}</h2>
         <div class="stats-grid">
+            {% if user_role == 'faculty_reviewer' %}
+            <div class="stat-card stat-card-blue">
+                <div class="stat-number">{{ total_candidates }}</div>
+                <div class="stat-label">Candidates with Checklists</div>
+            </div>
+            <div class="stat-card stat-card-green">
+                <div class="stat-number">{{ total_checklists }}</div>
+                <div class="stat-label">Reviewed by Faculty</div>
+            </div>
+            <div class="stat-card stat-card-yellow">
+                <div class="stat-number">{{ pending_checklists }}</div>
+                <div class="stat-label">Pending Reviews</div>
+            </div>
+            {% else %}
             <div class="stat-card stat-card-blue">
                 <div class="stat-number">{{ total_candidates }}</div>
                 <div class="stat-label">Total Candidates</div>
@@ -63,6 +77,7 @@
                 <div class="stat-number">{{ pending_checklists }}</div>
                 <div class="stat-label">Pending Evaluations</div>
             </div>
+            {% endif %}
         </div>
     </div>
 

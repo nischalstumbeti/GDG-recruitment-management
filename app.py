@@ -188,10 +188,24 @@ def dashboard():
     location = session.get('location') or user_data.get('location', 'Unknown')
     isp = session.get('isp') or user_data.get('isp', 'Unknown')
     
-    # Calculate statistics
-    total_candidates = len(candidates)
-    total_checklists = len(checklists)
-    pending_checklists = total_candidates - total_checklists
+    # Calculate statistics based on user role
+    if user_role == 'faculty_reviewer':
+        # For faculty: count candidates with checklists that have faculty reviews
+        total_with_checklists = len(checklists)  # Total candidates with checklists
+        reviewed_by_faculty = sum(1 for c in checklists.values() 
+                                 if c.get('faculty_comments') and 
+                                 c.get('faculty_comments', '').strip() != '')
+        pending_faculty_reviews = total_with_checklists - reviewed_by_faculty
+        
+        # Faculty-specific statistics
+        total_candidates = total_with_checklists
+        total_checklists = reviewed_by_faculty
+        pending_checklists = pending_faculty_reviews
+    else:
+        # For admin and interviewer: show general statistics
+        total_candidates = len(candidates)
+        total_checklists = len(checklists)
+        pending_checklists = total_candidates - total_checklists
     
     return render_template('dashboard.html', 
                          user_id=user_id,
