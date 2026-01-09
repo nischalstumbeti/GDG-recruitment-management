@@ -117,10 +117,10 @@ The platform centralizes candidate data management, interview evaluation, review
 | Layer | Technology | Purpose |
 |------|-----------|--------|
 | Backend | Python | Core business logic |
-| Web Framework | Flask / Django | Application routing and APIs |
-| Database | SQLite / PostgreSQL / MySQL | Secure data storage |
+| Web Framework | Flask | Application routing and APIs |
+| Database | PostgreSQL  | Secure data storage |
 | Frontend | HTML, CSS, JavaScript | UI and dashboards |
-| Reporting | ReportLab / WeasyPrint | A4 PDF reports |
+| Reporting | ReportLab | A4 PDF reports |
 | Security | RBAC & Audit Logs | Governance |
 | Version Control | Git & GitHub | Source control |
 
@@ -138,7 +138,7 @@ The system emphasizes:
 
 ## Project Scope
 
-This platform is purpose built for **GDGOnC - KARE community recruitment workflows** and is not intended for commercial hiring without further compliance extensions.
+This platform is purpose built for **Google Developer Groups On Campus Kare - KARE community recruitment workflows** and is not intended for commercial hiring without further compliance extensions.
 
 ---
 
@@ -146,5 +146,8 @@ This platform is purpose built for **GDGOnC - KARE community recruitment workflo
 
 **Designed & Developed by**  
 [**Nischal S Tumbeti**](https://github.com/nischalstumbeti)
+
+**Contributor**  
+[**Inukurthi Bharath Kumar**](https://github.com/bharath-inukurthi)
 
 </div>
